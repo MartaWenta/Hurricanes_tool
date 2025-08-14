@@ -1,6 +1,6 @@
 
 import sys, subprocess
-
+import os
 def ensure_user_pkg(mod_name: str, spec: str):
     try:
         __import__(mod_name)
@@ -23,7 +23,7 @@ ensure_user_pkg("plotly", "plotly==5.20.0")
 
 import plotly.express as px
 
-import os
+
 import sqlite3
 from typing import Set, Optional, Dict
 import streamlit as st, sys, subprocess
@@ -32,7 +32,7 @@ import pandas as pd
 import numpy as np
 import streamlit as st, sys, subprocess
 
-
+import plotly.graph_objects as go 
 
 # ── Streamlit page setup ───────────────────────────────────────────────
 st.set_page_config(layout="wide")
