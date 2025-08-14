@@ -1,12 +1,27 @@
+
+import sys, subprocess
+
+def ensure(pkg_spec: str):
+    """Install a package into the running Streamlit env if missing."""
+    try:
+        __import__(pkg_spec.split("==")[0].split(">=")[0])
+    except ImportError:
+        subprocess.check_call([sys.executable, "-m", "pip", "install", pkg_spec])
+
+# ensure plotly exists before importing px
+ensure("plotly==5.20.0")
+
+import plotly.express as px  # now safe
 import os
 import sqlite3
 from typing import Set, Optional, Dict
+import streamlit as st, sys, subprocess
 
 import pandas as pd
 import numpy as np
-import streamlit as st
-import plotly.express as px
-import plotly.graph_objects as go
+import streamlit as st, sys, subprocess
+
+
 
 # ── Streamlit page setup ───────────────────────────────────────────────
 st.set_page_config(layout="wide")
