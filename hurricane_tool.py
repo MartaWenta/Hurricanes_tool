@@ -1,17 +1,28 @@
 
 import sys, subprocess
 
-def ensure(pkg_spec: str):
-    """Install a package into the running Streamlit env if missing."""
+def ensure_user_pkg(mod_name: str, spec: str):
     try:
-        __import__(pkg_spec.split("==")[0].split(">=")[0])
+        __import__(mod_name)
+        return
     except ImportError:
-        subprocess.check_call([sys.executable, "-m", "pip", "install", pkg_spec])
+        pass
 
-# ensure plotly exists before importing px
-ensure("plotly==5.20.0")
+    target = os.path.join(os.path.expanduser("~"), "app-packages")  # e.g. /home/adminuser/app-packages
+    os.makedirs(target, exist_ok=True)
 
-import plotly.express as px  # now safe
+    # Install into the target dir (not the read-only venv)
+    subprocess.check_call(
+        [sys.executable, "-m", "pip", "install", "--no-cache-dir", "--target", target, spec]
+    )
+    if target not in sys.path:
+        sys.path.insert(0, target)
+    __import__(mod_name)
+
+ensure_user_pkg("plotly", "plotly==5.20.0")
+
+import plotly.express as px
+
 import os
 import sqlite3
 from typing import Set, Optional, Dict
