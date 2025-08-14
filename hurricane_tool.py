@@ -1,12 +1,38 @@
+
+import sys, subprocess
+
+def ensure_user_pkg(mod_name: str, spec: str):
+    try:
+        __import__(mod_name)
+        return
+    except ImportError:
+        pass
+
+    target = os.path.join(os.path.expanduser("~"), "app-packages")  # e.g. /home/adminuser/app-packages
+    os.makedirs(target, exist_ok=True)
+
+    # Install into the target dir (not the read-only venv)
+    subprocess.check_call(
+        [sys.executable, "-m", "pip", "install", "--no-cache-dir", "--target", target, spec]
+    )
+    if target not in sys.path:
+        sys.path.insert(0, target)
+    __import__(mod_name)
+
+ensure_user_pkg("plotly", "plotly==5.20.0")
+
+import plotly.express as px
+
 import os
 import sqlite3
 from typing import Set, Optional, Dict
+import streamlit as st, sys, subprocess
 
 import pandas as pd
 import numpy as np
-import streamlit as st
-import plotly.express as px
-import plotly.graph_objects as go
+import streamlit as st, sys, subprocess
+
+
 
 # ── Streamlit page setup ───────────────────────────────────────────────
 st.set_page_config(layout="wide")
